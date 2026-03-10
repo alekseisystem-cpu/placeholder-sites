@@ -248,8 +248,8 @@
 
       <!-- Right: Contact -->
       <div class="links">
-        <a href="mailto:alex@boldmoveco.com" class="pill">Email</a>
-        <a href="mailto:alex@boldmoveco.com" class="pill">alex@boldmoveco.com</a>
+        <a id="email-btn" href="mailto:alex@boldmoveco.com" class="pill">Email</a>
+        <a id="email-addr" href="mailto:alex@boldmoveco.com" class="pill">alex@boldmoveco.com</a>
       </div>
     </div>
   </div>
@@ -294,6 +294,21 @@
       }
       tick();
       setInterval(tick, 1000);
+    })();
+
+    // Dynamic email based on current domain
+    (function () {
+      var host = window.location.hostname.replace(/^www\./, '');
+      // Fall back to default if on localhost/vercel preview
+      var domain = (host && host !== 'localhost' && !host.includes('vercel'))
+        ? host
+        : 'boldmoveco.com';
+      var email = 'alex@' + domain;
+      var btn = document.getElementById('email-btn');
+      var addr = document.getElementById('email-addr');
+      btn.href = 'mailto:' + email;
+      addr.href = 'mailto:' + email;
+      addr.textContent = email;
     })();
   </script>
 </body>
