@@ -4,117 +4,297 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bold Move Co.</title>
+  <meta name="theme-color" content="#12130F">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #12130F;
+      --text: #E4DFDA;
+      --accent: #2F9C95;
+      --muted: rgba(228, 223, 218, 0.4);
+      --glow: rgba(140, 70, 20, 0.35);
+
+      --quint-out: cubic-bezier(0, 0.55, 0.45, 1);
+      --quint-in-out: cubic-bezier(0.85, 0, 0.15, 1);
+      --sine-in-out: cubic-bezier(0.37, 0, 0.63, 1);
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
     *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
 
     body {
-      font-family: 'JetBrains Mono', monospace;
-      background: #0a0a0f;
-      color: #e8e8e8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
       overflow: hidden;
-      position: relative;
     }
 
-    /* Animated gradient background */
-    body::before {
-      content: '';
+    /* ── Warm copper vignette glow on edges ── */
+    .edge-glow {
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse at 20% 50%, rgba(47, 156, 149, 0.06) 0%, transparent 50%),
-                  radial-gradient(ellipse at 80% 20%, rgba(100, 60, 180, 0.04) 0%, transparent 50%),
-                  radial-gradient(ellipse at 50% 80%, rgba(47, 156, 149, 0.03) 0%, transparent 50%);
-      animation: drift 12s ease-in-out infinite alternate;
-      z-index: 0;
-    }
-
-    /* Grain texture overlay */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
       pointer-events: none;
       z-index: 1;
+      background:
+        radial-gradient(ellipse at 0% 0%, var(--glow), transparent 40%),
+        radial-gradient(ellipse at 100% 0%, var(--glow), transparent 40%),
+        radial-gradient(ellipse at 0% 100%, var(--glow), transparent 40%),
+        radial-gradient(ellipse at 100% 100%, var(--glow), transparent 40%);
     }
 
-    @keyframes drift {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(-20px, 10px) scale(1.05); }
-    }
-
-    main {
+    /* ── Page container ── */
+    .page {
+      height: 100dvh;
+      width: 91.666%;
+      margin: 0 auto;
+      padding: 1.5rem 0;
       position: relative;
-      z-index: 2;
-      max-width: 560px;
-      padding: 2rem;
-      animation: enter 1s ease-out both;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: zoomIn 0.5s var(--quint-out) both;
     }
 
-    @keyframes enter {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @media (min-width: 768px) {
+      .page { padding: 3.5rem 0; }
     }
 
-    h1 {
-      font-size: clamp(1.5rem, 4vw, 2.2rem);
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      margin-bottom: 1.5rem;
-      color: #f0f0f0;
+    @keyframes zoomIn {
+      0% { transform: scale(1.1); }
+      100% { transform: none; }
     }
 
-    p {
-      font-size: clamp(0.82rem, 1.8vw, 0.92rem);
-      font-weight: 300;
-      line-height: 1.75;
-      color: #777;
-      margin-bottom: 2.5rem;
-      letter-spacing: 0.02em;
+    /* ── Top: Large heading ── */
+    .heading {
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
+      text-transform: uppercase;
+      animation: fadeIn 0.6s var(--sine-in-out) both;
     }
 
-    a {
-      font-size: clamp(0.78rem, 1.6vw, 0.88rem);
+    .char-wrap {
+      display: inline-block;
+      overflow: hidden;
+    }
+
+    .char {
+      display: inline-block;
+      animation: charReveal 0.7s var(--quint-in-out) both;
+      transform-origin: bottom;
+    }
+
+    @keyframes charReveal {
+      0% { transform: scaleY(0) scaleX(0.4); opacity: 0; }
+      100% { transform: none; opacity: 1; }
+    }
+
+    /* ── Bottom section ── */
+    .bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+    }
+
+    /* ── Bottom left: info ── */
+    .info {
+      animation: fadeIn 0.6s var(--sine-in-out) 0.3s both;
+    }
+
+    .label {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.55rem, 1.2vw, 0.7rem);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .desc {
+      font-size: clamp(1.1rem, 3vw, 1.8rem);
       font-weight: 400;
-      color: #2f9c95;
-      text-decoration: none;
-      border-bottom: 1px dashed rgba(47, 156, 149, 0.4);
-      padding-bottom: 2px;
-      transition: border-bottom 0.4s ease, color 0.4s ease;
-      letter-spacing: 0.03em;
+      letter-spacing: -0.03em;
+      line-height: 1.35;
+      max-width: 550px;
     }
 
-    a:hover {
-      border-bottom: 1px solid #2f9c95;
-      color: #3bbdb5;
+    .desc-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.55rem, 1.2vw, 0.7rem);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-top: 1.25rem;
+    }
+
+    /* ── Bottom right: contact pill ── */
+    .links {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+      animation: fadeIn 0.6s var(--sine-in-out) 0.5s both;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      border: 1px dashed rgba(228, 223, 218, 0.2);
+      background: rgba(18, 19, 15, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0s, border-style 0s;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .pill:hover {
+      border: 1px solid rgba(228, 223, 218, 1);
+      transition: border-color 0.5s, border-style 0s;
+    }
+
+    .pill:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    /* ── Clock ── */
+    .clock {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .blink {
+      animation: blink 2s steps(2, jump-none) infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .ampm {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(0.5rem, 1vw, 0.65rem);
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      vertical-align: super;
+      margin-left: 0.3rem;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 767px) {
+      .bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .links {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Bold Move Co.</h1>
-    <p>Professional business consulting and growth services. Helping businesses reach their potential.</p>
-    <a href="mailto:alex@boldmoveco.com">alex@boldmoveco.com</a>
-  </main>
+  <div class="edge-glow"></div>
+
+  <div class="page">
+    <!-- Top: Name -->
+    <h1 class="heading" id="heading" aria-label="Bold Move"></h1>
+
+    <!-- Bottom -->
+    <div class="bottom">
+      <!-- Left: Info -->
+      <div class="info">
+        <div class="label">Local Time (UTC<span id="utcOffset"></span>)</div>
+        <div class="clock" id="clock"></div>
+
+        <p class="desc">Business consulting &amp; growth services &#xb0; Helping companies reach their potential</p>
+
+        <div class="desc-sub">Est. 2024 &mdash; Strategy &amp; Operations</div>
+      </div>
+
+      <!-- Right: Contact -->
+      <div class="links">
+        <a href="mailto:alex@boldmoveco.com" class="pill">Email</a>
+        <a href="mailto:alex@boldmoveco.com" class="pill">alex@boldmoveco.com</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Character reveal
+    (function () {
+      var text = 'Bold Move';
+      var el = document.getElementById('heading');
+      var baseDelay = 0.12;
+      var stagger = 0.04;
+      text.split('').forEach(function (ch, i) {
+        var wrap = document.createElement('span');
+        wrap.className = 'char-wrap';
+        var span = document.createElement('span');
+        span.className = 'char';
+        span.style.animationDelay = (baseDelay + i * stagger) + 's';
+        span.textContent = ch === ' ' ? '\u00A0' : ch;
+        wrap.appendChild(span);
+        el.appendChild(wrap);
+      });
+    })();
+
+    // Clock
+    (function () {
+      var clockEl = document.getElementById('clock');
+      var offsetEl = document.getElementById('utcOffset');
+      var offset = -(new Date().getTimezoneOffset() / 60);
+      offsetEl.textContent = (offset >= 0 ? '+' : '') + offset + ':00';
+
+      function tick() {
+        var now = new Date();
+        var h = now.getHours();
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var ampm = h >= 12 ? 'pm' : 'am';
+        var h12 = h % 12 || 12;
+        clockEl.innerHTML =
+          String(h12).padStart(2, '0') +
+          '<span class="blink">:</span>' +
+          m +
+          '<span class="ampm">' + ampm + '</span>';
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
 </body>
 </html>
