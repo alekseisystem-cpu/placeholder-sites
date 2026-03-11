@@ -255,13 +255,31 @@
   </div>
 
   <script>
-    // Character reveal
+    // Domain → brand mapping
+    var BRANDS = {
+      'boldmoveco.com':     'Bold Move',
+      'akbizmail.com':      'AK BizMail',
+      'steadygrowco.com':   'Steady Grow',
+      'smartpathmail.com':  'Smart Path',
+      'pushforwardbiz.com': 'Push Forward',
+      'peakgrowthco.com':   'Peak Growth',
+      'dataflowbiz.com':    'Data Flow',
+      'replymate.au':       'Reply Mate'
+    };
+
+    var host = window.location.hostname.replace(/^www\./, '');
+    var domain = (host && host !== 'localhost' && !host.includes('vercel'))
+      ? host
+      : 'boldmoveco.com';
+    var brand = BRANDS[domain] || domain.replace(/\.\w+$/, '').replace(/[-]/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+
+    // Character reveal for heading
     (function () {
-      var text = 'Bold Move';
       var el = document.getElementById('heading');
+      el.setAttribute('aria-label', brand);
       var baseDelay = 0.12;
       var stagger = 0.04;
-      text.split('').forEach(function (ch, i) {
+      brand.split('').forEach(function (ch, i) {
         var wrap = document.createElement('span');
         wrap.className = 'char-wrap';
         var span = document.createElement('span');
@@ -298,11 +316,6 @@
 
     // Dynamic email based on current domain
     (function () {
-      var host = window.location.hostname.replace(/^www\./, '');
-      // Fall back to default if on localhost/vercel preview
-      var domain = (host && host !== 'localhost' && !host.includes('vercel'))
-        ? host
-        : 'boldmoveco.com';
       var email = 'alex@' + domain;
       var btn = document.getElementById('email-btn');
       var addr = document.getElementById('email-addr');
@@ -310,6 +323,9 @@
       addr.href = 'mailto:' + email;
       addr.textContent = email;
     })();
+
+    // Update page title
+    document.title = brand;
   </script>
 </body>
 </html>
